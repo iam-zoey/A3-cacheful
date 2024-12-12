@@ -1,0 +1,53 @@
+ubuntu@instance-20241209-031100:~/lab3$ go run main.go
+Provide the number of posts: 2
+ ==== Starting Warehouse ====
+Starting a Warehouse node on process 525801
+2024/12/10 19:15:18 Node 0 is listening on localhost:8000
+===== Starting nodes =====
+INFO: Assigning Node 1 to Post 1
+INFO: Assigning Node 2 to Post 2
+INFO: Assigning Node 3 to Post 2
+INFO: Assigning Node 4 to Post 1
+INFO: Started Node 1 with Role seller in Post 1
+INFO: Started Node 4 with Role buyer in Post 1
+INFO: Started Node 2 with Role buyer in Post 2
+INFO: Started Node 3 with Role seller in Post 2
+  Node 4 assigned role: buyer for Post 1
+  Node 4 initialized with neighbors: [1 1] and role: buyer
+2024/12/10 19:15:23 Node 4 is listening on localhost:8004
+  Node 1 assigned role: seller for Post 1
+  Node 1 initialized with neighbors: [4 4] and role: seller
+2024/12/10 19:15:23 Node 1 is listening on localhost:8001
+  Node 3 assigned role: seller for Post 2
+  Node 3 initialized with neighbors: [2 2] and role: seller
+2024/12/10 19:15:23 Node 3 is listening on localhost:8003
+  Node 2 assigned role: buyer for Post 2
+  Node 2 initialized with neighbors: [3 3] and role: buyer
+2024/12/10 19:15:23 Node 2 is listening on localhost:8002
+===== Starting election =====
+  Triggering election for Post 1...
+  Starting election for Post 1...
+  Node 4 received election message. Visited nodes: [1 4]
+2024/12/10 19:15:28 Post1 successfully elected the new leader: Node 4 
+  Triggering election for Post 2...
+  Node 2 has neighbors: [3 3]
+  Node 3 has neighbors: [2 2]
+2024/12/10 19:15:28 Post2 successfully elected the new leader: Node 3 
+
+===== Display Nodes  =====
+
+== Node ID: 1 Role Information ==
+Node information retrieved successfully.
+Node ID: 1, Role: seller , Post:1, Leader: 4, Port: localhost:8001, Neighbors: [4 4], ItemsforSale: map[boar:1]
+
+== Node ID: 2 Role Information ==
+Node information retrieved successfully.
+Node ID: 2, Role: buyer, Post:2,Leader: 3, Port: localhost:8002, Neighbors: [3 3], ShoppingList: map[fish:1]
+
+== Node ID: 3 Role Information ==
+Node information retrieved successfully.
+Node ID: 3, Role: Trader,Post:2, Leader: 3, Port: localhost:8003,  Neighbors: [2 2],
+
+== Node ID: 4 Role Information ==
+Node information retrieved successfully.
+Node ID: 4, Role: Trader,Post:1, Leader: 4, Port: localhost:8004,  Neighbors: [1 1],

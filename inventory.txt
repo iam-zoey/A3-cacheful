@@ -1,0 +1,3 @@
+fish 734
+boar 883
+salt 991

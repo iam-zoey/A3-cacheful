@@ -1,0 +1,76 @@
+ubuntu@instance-20241209-031100:~/lab3$ go run main.go
+Provide the number of posts: 2
+
+==== Starting Warehouse ====
+Starting a Warehouse node on process 765480
+2024/12/11 11:29:56 Node 0 is listening on localhost:8000
+
+======= Starting nodes =======
+INFO: Started Node 1 with Role buyer in Post 2 on process 765539
+INFO: Started Node 3 with Role seller in Post 2 on process 765540
+INFO: Started Node 2 with Role buyer in Post 1 on process 765541
+INFO: Started Node 4 with Role seller in Post 1 on process 765542
+2024/12/11 11:30:01 Node 2 is listening on localhost:8002
+2024/12/11 11:30:01 Node 1 is listening on localhost:8001
+2024/12/11 11:30:01 Node 3 is listening on localhost:8003
+2024/12/11 11:30:01 Node 4 is listening on localhost:8004
+
+======== Starting election =======
+INFO: Triggering election for Post 1...
+2024/12/11 11:30:05 Node 3: Election completed. Coordinator elected: Node 3
+2024/12/11 11:30:05 Node 1: Trader assigned as Node 3 for Post 2
+2024/12/11 11:30:05 Node 1: Trader assigned as Node 3 for Post 2
+Election triggered for group 1 on node localhost:8001
+INFO: Triggering election for Post 2...
+2024/12/11 11:30:07 Node 4: Election completed. Coordinator elected: Node 4
+2024/12/11 11:30:07 Node 2: Trader assigned as Node 4 for Post 1
+2024/12/11 11:30:07 Node 2: Trader assigned as Node 4 for Post 1
+Election triggered for group 2 on node localhost:8002
+
+=========== Display Nodes  ===========
+
+[Node ID: 1 Role Information]
+Node information retrieved successfully.
+Node ID: 1, Role: buyer, Post:2, Leader: 3, Neighbors: [3 3], ShoppingList: map[fish:1]
+
+[Node ID: 2 Role Information]
+Node information retrieved successfully.
+Node ID: 2, Role: buyer, Post:1, Leader: 4, Neighbors: [4 4], ShoppingList: map[fish:6]
+
+[Node ID: 3 Role Information]
+Node information retrieved successfully.
+Node ID: 3, Role: Trader, Post:2, Leader: 3,  Neighbors: [1 1],
+
+[Node ID: 4 Role Information]
+Node information retrieved successfully.
+Node ID: 4, Role: Trader, Post:1, Leader: 4,  Neighbors: [2 2],
+
+=========== Checking the roles  =========
+Seller 3
+Node is not or no longer a seller
+Seller 4
+Node is not or no longer a seller
+Buyer 1
+Buyer 1: Response: Node 1 (Buyer) timer startedNode 1 (Buyer) timer started
+Buyer 2
+Buyer 2: Response: Node 2 (Buyer) timer startedNode 2 (Buyer) timer started
+ubuntu@instance-20241209-031100:~/lab3$ 2024/12/11 11:30:41 Node 1 (Buyer from Post 3): Sending buy request for 3 units of salt to Trader 3
+2024/12/11 11:30:41 Trader 3: Handling buy request from Buyer 1
+2024/12/11 11:30:41 FAILED DUE TO INSUFFICIENT ITEMS - insufficient salt in Warehouse.  Available: 0
+2024/12/11 11:30:41 Trader 3 from Post 2: Buy request failed: Not enough salt in inventory. Available: 0
+2024/12/11 11:30:41 Buyer 1: Buy request response: Not enough salt in inventory. Available: 0
+./kill.sh2024/12/11 11:30:43 Node 2 (Buyer from Post 4): Sending buy request for 4 units of boar to Trader 4
+2024/12/11 11:30:43 Trader 4: Handling buy request from Buyer 2
+2024/12/11 11:30:43 FAILED DUE TO INSUFFICIENT ITEMS - insufficient boar in Warehouse.  Available: 0
+2024/12/11 11:30:43 Trader 4 from Post 1: Buy request failed: Not enough boar in inventory. Available: 0
+2024/12/11 11:30:43 Buyer 2: Buy request response: Not enough boar in inventory. Available: 0
+./kill.sh
+8000/tcp:            765480
+signal: killed
+8001/tcp:            765933
+signal: killed
+8002/tcp:            765931
+signal: killed
+8003/tcp:            765944
+signal: killed
+8004/tcp:            765950

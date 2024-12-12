@@ -1,0 +1,156 @@
+ubuntu@instance-20241209-031100:~/lab3$ go run main.go
+Provide the number of posts: 2
+
+==== Starting Warehouse ====
+Starting a Warehouse node on process 749020
+2024/12/11 10:35:29 Node 0 is listening on localhost:8000
+
+======= Starting nodes =======
+INFO: Started Node 1 with Role buyer in Post 1 on process 749073
+INFO: Started Node 3 with Role buyer in Post 1 on process 749074
+INFO: Started Node 2 with Role seller in Post 2 on process 749075
+INFO: Started Node 4 with Role buyer in Post 2 on process 749076
+2024/12/11 10:35:34 Node 1 is listening on localhost:8001
+2024/12/11 10:35:34 Node 2 is listening on localhost:8002
+2024/12/11 10:35:34 Node 4 is listening on localhost:8004
+2024/12/11 10:35:34 Node 3 is listening on localhost:8003
+
+======== Starting election =======
+postgroup: map[1:[1 3] 2:[2 4]]
+INFO: Triggering election for Post 2...
+2024/12/11 10:35:39 Node 4: Election completed. Coordinator elected: Node 4
+2024/12/11 10:35:39 Node 2: Trader assigned as Node 4 for Post 2
+2024/12/11 10:35:39 Node 2: Trader assigned as Node 4 for Post 2
+Election triggered for group 2 on node localhost:8002
+INFO: Triggering election for Post 1...
+2024/12/11 10:35:41 Node 3: Election completed. Coordinator elected: Node 3
+2024/12/11 10:35:41 Node 1: Trader assigned as Node 3 for Post 1
+2024/12/11 10:35:41 Node 1: Trader assigned as Node 3 for Post 1
+Election triggered for group 1 on node localhost:8001
+
+=========== Display Nodes  ===========
+
+[Node ID: 1 Role Information]
+Node information retrieved successfully.
+Node ID: 1, Role: buyer, Post:1, Leader: 3, Neighbors: [3 3], ShoppingList: map[salt:9]
+
+[Node ID: 2 Role Information]
+Node information retrieved successfully.
+Node ID: 2, Role: seller , Post:2, Leader: 4,  Neighbors: [4 4], ItemsforSale: map[boar:9]
+
+[Node ID: 3 Role Information]
+Node information retrieved successfully.
+Node ID: 3, Role: Trader, Post:1, Leader: 3,  Neighbors: [1 1],
+
+[Node ID: 4 Role Information]
+Node information retrieved successfully.
+Node ID: 4, Role: Trader, Post:2, Leader: 4,  Neighbors: [2 2],
+
+=========== Checking the roles  =========
+Seller 2
+Node 2 (Seller) timer started
+Buyer 1
+Buyer 1: Response: Node 1 (Buyer) timer startedNode 1 (Buyer) timer started
+Buyer 3
+Buyer 3: Response: Node is not or no longer a buyerNode is not or no longer a buyer
+Buyer 4
+Buyer 4: Response: Node is not or no longer a buyerNode is not or no longer a buyer
+ubuntu@instance-20241209-031100:~/lab3$ INFO - Node 2 (Seller from Post 2): Generated 10 units of salt. Total inventory: map[boar:9 salt:10]
+2024/12/11 10:36:11 Node 4 (Trader from Post 2): Received load request from Seller 2: 0 units of fish
+2024/12/11 10:36:13 Node 1 (Buyer from Post 3): Sending buy request for 8 units of boar to Trader 3
+2024/12/11 10:36:13 Trader 3: Handling buy request from Buyer 1
+2024/12/11 10:36:13 FAILED DUE TO INSUFFICIENT ITEMS - insufficient boar in Warehouse.  Available: 0
+2024/12/11 10:36:13 Trader 3 from Post 1: Buy request failed: Not enough boar in inventory. Available: 0
+2024/12/11 10:36:13 Buyer 1: Buy request response: Not enough boar in inventory. Available: 0
+2024/12/11 10:36:16 Warehouse: SUCCESS - Loaded inventory from file: map[]
+2024/12/11 10:36:16 SUCCESS IN LOADING - Warehouse added 0 units of fish. Current inventory: map[fish:0]
+2024/12/11 10:36:16 Node 4 (Trader from Post 2): Forwarded load request to warehouse. Response: Added 0 units of fish to inventory
+2024/12/11 10:36:16 Node 2 (Seller from Post 2): loaded 0 units of fish to Trader 4
+INFO - Node 2 (Seller from Post 2): Generated 10 units of salt. Total inventory: map[boar:9 salt:20]
+2024/12/11 10:36:21 Node 4 (Trader from Post 2): Received load request from Seller 2: 9 units of boar
+2024/12/11 10:36:23 Node 1 (Buyer from Post 3): Sending buy request for 9 units of salt to Trader 3
+2024/12/11 10:36:23 Trader 3: Handling buy request from Buyer 1
+2024/12/11 10:36:23 FAILED DUE TO INSUFFICIENT ITEMS - insufficient salt in Warehouse.  Available: 0
+2024/12/11 10:36:23 Trader 3 from Post 1: Buy request failed: Not enough salt in inventory. Available: 0
+2024/12/11 10:36:23 Buyer 1: Buy request response: Not enough salt in inventory. Available: 0
+2024/12/11 10:36:26 Warehouse: SUCCESS - Loaded inventory from file: map[fish:0]
+2024/12/11 10:36:26 SUCCESS IN LOADING - Warehouse added 9 units of boar. Current inventory: map[boar:9 fish:0]
+2024/12/11 10:36:26 Node 4 (Trader from Post 2): Forwarded load request to warehouse. Response: Added 9 units of boar to inventory
+2024/12/11 10:36:26 Node 2 (Seller from Post 2): loaded 9 units of boar to Trader 4
+INFO - Node 2 (Seller from Post 2): Generated 10 units of fish. Total inventory: map[fish:10 salt:20]
+2024/12/11 10:36:31 Node 4 (Trader from Post 2): Received load request from Seller 2: 20 units of salt
+2024/12/11 10:36:33 Node 1 (Buyer from Post 3): Sending buy request for 1 units of fish to Trader 3
+2024/12/11 10:36:33 Trader 3: Handling buy request from Buyer 1
+2024/12/11 10:36:33 FAILED DUE TO INSUFFICIENT ITEMS - insufficient fish in Warehouse.  Available: 0
+2024/12/11 10:36:33 Trader 3 from Post 1: Buy request failed: Not enough fish in inventory. Available: 0
+2024/12/11 10:36:33 Buyer 1: Buy request response: Not enough fish in inventory. Available: 0
+2024/12/11 10:36:36 Warehouse: SUCCESS - Loaded inventory from file: map[boar:9 fish:0]
+2024/12/11 10:36:36 SUCCESS IN LOADING - Warehouse added 20 units of salt. Current inventory: map[boar:9 fish:0 salt:20]
+2024/12/11 10:36:36 Node 4 (Trader from Post 2): Forwarded load request to warehouse. Response: Added 20 units of salt to inventory
+2024/12/11 10:36:36 Node 2 (Seller from Post 2): loaded 20 units of salt to Trader 4
+INFO - Node 2 (Seller from Post 2): Generated 10 units of fish. Total inventory: map[fish:20]
+2024/12/11 10:36:41 Node 4 (Trader from Post 2): Received load request from Seller 2: 0 units of salt
+2024/12/11 10:36:43 Node 1 (Buyer from Post 3): Sending buy request for 9 units of salt to Trader 3
+2024/12/11 10:36:43 Trader 3: Handling buy request from Buyer 1
+2024/12/11 10:36:43 SUCEESS IN SHIPPING - Warehouse shipped 9 units of salt. Remaining inventory: map[boar:9 fish:0 salt:11]
+2024/12/11 10:36:43 Trader 3 from Post 1: Buy request successful: Shipped 9 units of salt
+2024/12/11 10:36:43 Buyer 1: Buy request response: Shipped 9 units of salt
+2024/12/11 10:36:46 Warehouse: SUCCESS - Loaded inventory from file: map[boar:9 fish:0 salt:11]
+2024/12/11 10:36:46 SUCCESS IN LOADING - Warehouse added 0 units of salt. Current inventory: map[boar:9 fish:0 salt:11]
+2024/12/11 10:36:46 Node 4 (Trader from Post 2): Forwarded load request to warehouse. Response: Added 0 units of salt to inventory
+2024/12/11 10:36:46 Node 2 (Seller from Post 2): loaded 0 units of salt to Trader 4
+INFO - Node 2 (Seller from Post 2): Generated 10 units of fish. Total inventory: map[fish:30]
+2024/12/11 10:36:51 Node 4 (Trader from Post 2): Received load request from Seller 2: 0 units of salt
+2024/12/11 10:36:53 Node 1 (Buyer from Post 3): Sending buy request for 8 units of boar to Trader 3
+2024/12/11 10:36:53 Trader 3: Handling buy request from Buyer 1
+2024/12/11 10:36:53 SUCEESS IN SHIPPING - Warehouse shipped 8 units of boar. Remaining inventory: map[boar:1 fish:0 salt:11]
+2024/12/11 10:36:53 Trader 3 from Post 1: Buy request successful: Shipped 8 units of boar
+2024/12/11 10:36:53 Buyer 1: Buy request response: Shipped 8 units of boar
+2024/12/11 10:36:56 Warehouse: SUCCESS - Loaded inventory from file: map[boar:1 fish:0 salt:11]
+2024/12/11 10:36:56 SUCCESS IN LOADING - Warehouse added 0 units of salt. Current inventory: map[boar:1 fish:0 salt:11]
+2024/12/11 10:36:56 Node 4 (Trader from Post 2): Forwarded load request to warehouse. Response: Added 0 units of salt to inventory
+2024/12/11 10:36:56 Node 2 (Seller from Post 2): loaded 0 units of salt to Trader 4
+INFO - Node 2 (Seller from Post 2): Generated 10 units of boar. Total inventory: map[boar:10 fish:30]
+2024/12/11 10:37:01 Node 4 (Trader from Post 2): Received load request from Seller 2: 0 units of salt
+2024/12/11 10:37:03 Node 1 (Buyer from Post 3): Sending buy request for 9 units of fish to Trader 3
+2024/12/11 10:37:03 Trader 3: Handling buy request from Buyer 1
+2024/12/11 10:37:03 FAILED DUE TO INSUFFICIENT ITEMS - insufficient fish in Warehouse.  Available: 0
+2024/12/11 10:37:03 Trader 3 from Post 1: Buy request failed: Not enough fish in inventory. Available: 0
+2024/12/11 10:37:03 Buyer 1: Buy request response: Not enough fish in inventory. Available: 0
+2024/12/11 10:37:06 Warehouse: SUCCESS - Loaded inventory from file: map[boar:1 fish:0 salt:11]
+2024/12/11 10:37:06 SUCCESS IN LOADING - Warehouse added 0 units of salt. Current inventory: map[boar:1 fish:0 salt:11]
+2024/12/11 10:37:06 Node 4 (Trader from Post 2): Forwarded load request to warehouse. Response: Added 0 units of salt to inventory
+2024/12/11 10:37:06 Node 2 (Seller from Post 2): loaded 0 units of salt to Trader 4
+INFO - Node 2 (Seller from Post 2): Generated 10 units of fish. Total inventory: map[boar:10 fish:40]
+2024/12/11 10:37:11 Node 4 (Trader from Post 2): Received load request from Seller 2: 0 units of salt
+2024/12/11 10:37:13 Node 1 (Buyer from Post 3): Sending buy request for 2 units of boar to Trader 3
+2024/12/11 10:37:13 Trader 3: Handling buy request from Buyer 1
+2024/12/11 10:37:13 FAILED DUE TO INSUFFICIENT ITEMS - insufficient boar in Warehouse.  Available: 1
+2024/12/11 10:37:13 Trader 3 from Post 1: Buy request failed: Not enough boar in inventory. Available: 1
+2024/12/11 10:37:13 Buyer 1: Buy request response: Not enough boar in inventory. Available: 1
+2024/12/11 10:37:16 Warehouse: SUCCESS - Loaded inventory from file: map[boar:1 fish:0 salt:11]
+2024/12/11 10:37:16 SUCCESS IN LOADING - Warehouse added 0 units of salt. Current inventory: map[boar:1 fish:0 salt:11]
+2024/12/11 10:37:16 Node 4 (Trader from Post 2): Forwarded load request to warehouse. Response: Added 0 units of salt to inventory
+2024/12/11 10:37:16 Node 2 (Seller from Post 2): loaded 0 units of salt to Trader 4
+INFO - Node 2 (Seller from Post 2): Generated 10 units of fish. Total inventory: map[boar:10 fish:50]
+2024/12/11 10:37:21 Node 4 (Trader from Post 2): Received load request from Seller 2: 0 units of salt
+2024/12/11 10:37:23 Node 1 (Buyer from Post 3): Sending buy request for 10 units of boar to Trader 3
+2024/12/11 10:37:23 Trader 3: Handling buy request from Buyer 1
+2024/12/11 10:37:23 FAILED DUE TO INSUFFICIENT ITEMS - insufficient boar in Warehouse.  Available: 1
+2024/12/11 10:37:23 Trader 3 from Post 1: Buy request failed: Not enough boar in inventory. Available: 1
+2024/12/11 10:37:23 Buyer 1: Buy request response: Not enough boar in inventory. Available: 1
+2024/12/11 10:37:26 Warehouse: SUCCESS - Loaded inventory from file: map[boar:1 fish:0 salt:11]
+2024/12/11 10:37:26 SUCCESS IN LOADING - Warehouse added 0 units of salt. Current inventory: map[boar:1 fish:0 salt:11]
+2024/12/11 10:37:26 Node 4 (Trader from Post 2): Forwarded load request to warehouse. Response: Added 0 units of salt to inventory
+2024/12/11 10:37:26 Node 2 (Seller from Post 2): loaded 0 units of salt to Trader 4
+./kill.sh
+8000/tcp:            749020
+signal: killed
+8001/tcp:            749467
+signal: killed
+8002/tcp:            749473
+signal: killed
+8003/tcp:            749481
+signal: killed
+8004/tcp:            749479
+signal: killed
