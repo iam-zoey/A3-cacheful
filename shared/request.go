@@ -260,82 +260,73 @@ func (n *Node) HandleBuyRequest(req *Message, reply *Message) error {
 	// Check if the Trader has enough stock
 	available, exists := trader.Cache[req.Item]
 	if !exists || available < req.Quantity {
+		// Trader rejects based on its cache
 		reply.Type = "FAILURE"
 		reply.Message = fmt.Sprintf("Insufficient stock for %s. Available: %d", req.Item, available)
 		log.Printf("Trader %d: Insufficient stock for %s. Available: %d, Requested: %d", n.ID, req.Item, available, req.Quantity)
+
+		// Forward to Warehouse for verification (to check for underselling)
+		go n.ForwardBuyRequestToWarehouse(req, "CHECK_UNDERSELLING")
 		return nil
 	}
 
-	// Temporarily deduct stock from the cache
+	// Trader accepts based on its cache
 	trader.Cache[req.Item] -= req.Quantity
 	reply.Type = "SUCCESS"
 	reply.Message = fmt.Sprintf("Request for %d %s accepted. Processing with Warehouse.", req.Quantity, req.Item)
 	log.Printf("Trader %d: Accepted request for %d %s. Remaining cache: %d", n.ID, req.Quantity, req.Item, trader.Cache[req.Item])
 
 	// Forward request to Warehouse
-	go n.ForwardRequestToWarehouse(req)
-
+	go n.ForwardBuyRequestToWarehouse(req, "CHECK_OVERSELLING")
 	return nil
-}
-
-func (n *Node) ForwardRequestToWarehouse(req *Message) {
-	client, err := GetClient(0) // Assuming Warehouse is Node 0
-	if err != nil {
-		log.Printf("Trader %d: Unable to connect to Warehouse: %v", n.ID, err)
-		return
-	}
-	defer client.Close()
-
-	var warehouseReply Message
-	err = client.Call("Node0.BuyProduct", req, &warehouseReply)
-	if err != nil || warehouseReply.Type == "FAILURE" {
-		// Warehouse rejected the request
-		log.Printf("Trader %d: Warehouse rejected request for %d %s: %s", n.ID, req.Quantity, req.Item, warehouseReply.Message)
-
-		// Add back the rejected quantity to Trader's cache
-		trader, ok := n.Role.(*Trader)
-		if ok {
-			trader.CacheLock.Lock()
-			trader.Cache[req.Item] += req.Quantity
-			trader.CacheLock.Unlock()
-		}
-
-		// Notify Buyer of the rejection
-		go n.NotifyBuyerOfRejection(req.From, req.Item, req.Quantity, warehouseReply.Message)
-	} else {
-		// Request confirmed by Warehouse
-		log.Printf("Trader %d: Warehouse confirmed request for %d %s", n.ID, req.Quantity, req.Item)
-	}
 }
 
 /*
 forward the buy request to the Warehouse and handle potential rejection
 */
-func (n *Node) ForwardBuyRequestToWarehouse(req *Message, traderID int) {
+func (n *Node) ForwardBuyRequestToWarehouse(req *Message, checkType string) {
 	client, err := GetClient(0) // Connect to Warehouse (Node 0)
 	if err != nil {
-		log.Printf("Trader: ERROR - Unable to connect to Warehouse: %v", err)
+		log.Printf("Trader %d: ERROR - Unable to connect to Warehouse: %v", n.ID, err)
 		return
 	}
 	defer client.Close()
 
 	var warehouseReply Message
 	err = client.Call("Node0.BuyProduct", req, &warehouseReply)
-	if err != nil || warehouseReply.Type == "FAILURE" {
-		// Warehouse rejected the request
-		log.Printf("REJECTION: OVERSELLING - Warehouse rejected request for %d units of %s: %s", req.Quantity, req.Item, warehouseReply.Message)
+	if err != nil {
+		log.Printf("Trader %d: ERROR - Failed to forward buy request to Warehouse: %v", n.ID, err)
+		return
+	}
 
-		// Update Trader cache
-		t := n.Role.(*Trader)
-		t.CacheLock.Lock()
-		t.Cache[req.Item] += req.Quantity // Add back rejected quantity
-		t.CacheLock.Unlock()
+	// Check for discrepancies
+	if checkType == "CHECK_OVERSELLING" && warehouseReply.Type == "FAILURE" {
+		log.Printf("OVERSELLING DETECTED - Trader %d: Warehouse rejected request for %d %s: %s", n.ID, req.Quantity, req.Item, warehouseReply.Message)
+		// Update Trader cache to revert the deduction
+		trader := n.Role.(*Trader)
+		trader.CacheLock.Lock()
+		trader.Cache[req.Item] += req.Quantity
+		trader.CacheLock.Unlock()
+	} else if checkType == "CHECK_UNDERSELLING" && warehouseReply.Type == "SUCCESS" {
+		log.Printf("UNDERSELLING DETECTED - Trader %d: Warehouse has sufficient stock for %d %s but request was rejected by cache.", n.ID, req.Quantity, req.Item)
+	}
 
-		// Notify the Buyer of the rejection
-		go n.NotifyBuyerOfRejection(req.From, req.Item, req.Quantity, warehouseReply.Message)
+	// Notify Buyer with final decision
+	go n.NotifyBuyerOfFinalDecision(req.From, warehouseReply)
+}
+func (n *Node) NotifyBuyerOfFinalDecision(buyerID int, warehouseReply Message) {
+	client, err := GetClient(buyerID)
+	if err != nil {
+		log.Printf("Trader %d: ERROR - Unable to notify Buyer %d: %v", n.ID, buyerID, err)
+		return
+	}
+	defer client.Close()
+
+	err = client.Call(fmt.Sprintf("Node%d.HandleRejection", buyerID), &warehouseReply, nil)
+	if err != nil {
+		log.Printf("Trader %d: ERROR - Failed to notify Buyer %d: %v", n.ID, buyerID, err)
 	} else {
-		// Warehouse confirmed the request
-		log.Printf("SUCCESS - Warehouse processed request for %d units of %s", req.Quantity, req.Item)
+		log.Printf("Trader %d: Notified Buyer %d with final decision: %s", n.ID, buyerID, warehouseReply.Message)
 	}
 }
 

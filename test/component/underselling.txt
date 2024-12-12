@@ -1,0 +1,130 @@
+ubuntu@instance-20241209-031100:~/transfer/A3-cacheful$ go run main.go
+Provide the number of posts: 3
+
+==== Starting Warehouse ====
+Starting a Warehouse node on process 1026079
+2024/12/12 04:50:39 Node 0 is listening on localhost:8000
+
+======= Starting nodes =======
+INFO: Started Node 1 with Role buyer in Post 2 on process 1026133
+INFO: Started Node 2 with Role buyer in Post 2 on process 1026134
+INFO: Started Node 3 with Role seller in Post 3 on process 1026135
+INFO: Started Node 4 with Role buyer in Post 3 on process 1026136
+INFO: Started Node 6 with Role buyer in Post 3 on process 1026137
+INFO: Started Node 5 with Role seller in Post 1 on process 1026144
+2024/12/12 04:50:44 Node 1 is listening on localhost:8001
+2024/12/12 04:50:44 Node 4 is listening on localhost:8004
+  Node 5 is the only node in the post. Assigning Trader role.
+2024/12/12 04:50:44 Node 5 is listening on localhost:8005
+2024/12/12 04:50:44 Node 2 is listening on localhost:8002
+2024/12/12 04:50:44 Node 3 is listening on localhost:8003
+2024/12/12 04:50:44 Node 6 is listening on localhost:8006
+
+======== Starting election =======
+INFO: Triggering election for Post 2...
+2024/12/12 04:50:49 Node 1: Election completed. Coordinator elected: Node 2
+2024/12/12 04:50:49 Node 2: Trader assigned as Node 2 for Post 2
+2024/12/12 04:50:49 Successfully notified Node 2 about the coordinator.
+2024/12/12 04:50:49 Node 1: Trader assigned as Node 2 for Post 2
+2024/12/12 04:50:49 Successfully notified Node 1 about the coordinator.
+Election triggered for group 2 on node localhost:8002
+INFO: Triggering election for Post 3...
+2024/12/12 04:50:51 Node 4: Election completed. Coordinator elected: Node 6
+2024/12/12 04:50:51 Node 3: Trader assigned as Node 6 for Post 3
+2024/12/12 04:50:51 Successfully notified Node 3 about the coordinator.
+2024/12/12 04:50:51 Node 6: Trader assigned as Node 6 for Post 3
+2024/12/12 04:50:51 Successfully notified Node 6 about the coordinator.
+2024/12/12 04:50:51 Node 4: Trader assigned as Node 6 for Post 3
+2024/12/12 04:50:51 Successfully notified Node 4 about the coordinator.
+Election triggered for group 3 on node localhost:8003
+2024/12/12 04:50:53 Post 1 has 1 node(s). Election not required.
+
+=========== Display Nodes  ===========
+
+[Node ID: 4 Role Information]
+Node information retrieved successfully.
+Node ID: 4, Role: buyer, Post:3, Leader: 6, Neighbors: [3 6], ShoppingList: map[salt:6]
+
+[Node ID: 3 Role Information]
+Node information retrieved successfully.
+Node ID: 3, Role: seller , Post:3, Leader: 6,  Neighbors: [6 4], ItemsforSale: map[boar:2]
+
+[Node ID: 2 Role Information]
+Node information retrieved successfully.
+Node ID: 2, Role: Trader, Post:2, Leader: 2,  Neighbors: [1 1],
+
+[Node ID: 1 Role Information]
+Node information retrieved successfully.
+Node ID: 1, Role: buyer, Post:2, Leader: 2, Neighbors: [2 2], ShoppingList: map[salt:5]
+
+=========== Initializing Traders =========
+Initializing Trader Node 0 for Post 2...
+2024/12/12 04:51:23 Trader 0: Initialized successfully. Starting periodic sync.
+2024/12/12 04:51:23 Node 0 is not a Trader
+Initializing Trader Node 0 for Post 3...
+2024/12/12 04:51:23 Trader 0: Initialized successfully. Starting periodic sync.
+2024/12/12 04:51:23 Node 0 is not a Trader
+
+=========== Checking the roles  =========
+Seller 3
+Node 3 (Seller) timer started
+Seller 5
+Node is not or no longer a seller
+Buyer 1
+Buyer 1: Response: Node 1 (Buyer) timer startedNode 1 (Buyer) timer started
+INFO - Node 3 (Seller from Post 3): Generated 10 units of salt. Total inventory: map[boar:2 salt:15]
+2024/12/12 04:51:28 SUCCESS - Warehouse: Loaded inventory from file: map[boar:962 fish:899 salt:1148]
+2024/12/12 04:51:28 SUCCESS - Warehouse: Added 15 units of salt. Current inventory: map[boar:962 fish:899 salt:1163]
+2024/12/12 04:51:28 Trader 6: Successfully forwarded LOAD request to Warehouse
+2024/12/12 04:51:28 SUCCESS - Node 3 (Seller from Post 3): Loaded 15 units of salt to Trader 6
+Buyer 2
+Buyer 2: Response: Node is not or no longer a buyerNode is not or no longer a buyer
+Buyer 4
+Buyer 4: Response: Node 4 (Buyer) timer startedNode 4 (Buyer) timer started
+INFO - Node 3 (Seller from Post 3): Generated 10 units of boar. Total inventory: map[boar:17]
+2024/12/12 04:51:33 SUCCESS - Warehouse: Loaded inventory from file: map[boar:962 fish:899 salt:1163]
+2024/12/12 04:51:33 SUCCESS - Warehouse: Added 0 units of salt. Current inventory: map[boar:962 fish:899 salt:1163]
+2024/12/12 04:51:33 Trader 6: Successfully forwarded LOAD request to Warehouse
+2024/12/12 04:51:33 SUCCESS - Node 3 (Seller from Post 3): Loaded 0 units of salt to Trader 6
+Buyer 6
+Buyer 6: Response: Node is not or no longer a buyerNode is not or no longer a buyer
+ubuntu@instance-20241209-031100:~/transfer/A3-cacheful$ 2024/12/12 04:51:37 Node 1 (Buyer from Post 2): Sending buy request for 3 units of boar to Trader 2
+2024/12/12 04:51:37 Trader 2: Insufficient stock for boar. Available: 0, Requested: 3
+2024/12/12 04:51:37 Buyer 1: Buy request response: Insufficient stock for boar. Available: 0
+2024/12/12 04:51:37 Warehouse 0: Shipped 3 units of boar. Remaining inventory: map[boar:959 fish:899 salt:1163]
+2024/12/12 04:51:37 UNDERSELLING DETECTED - Trader 2: Warehouse has sufficient stock for 3 boar but request was rejected by cache.
+2024/12/12 04:51:37 RE-CONFIRM: Buyer 1: Received rejection notification: Shipped 3 units of boar
+2024/12/12 04:51:37 Trader 2: Notified Buyer 1 with final decision: Shipped 3 units of boar
+INFO - Node 3 (Seller from Post 3): Generated 10 units of boar. Total inventory: map[boar:32]
+2024/12/12 04:51:38 SUCCESS - Warehouse: Loaded inventory from file: map[boar:962 fish:899 salt:1163]
+2024/12/12 04:51:38 SUCCESS - Warehouse: Added 0 units of fish. Current inventory: map[boar:962 fish:899 salt:1163]
+2024/12/12 04:51:38 Trader 6: Successfully forwarded LOAD request to Warehouse
+2024/12/12 04:51:38 SUCCESS - Node 3 (Seller from Post 3): Loaded 0 units of fish to Trader 6
+2024/12/12 04:51:41 Node 4 (Buyer from Post 6): Sending buy request for 3 units of boar to Trader 6
+2024/12/12 04:51:41 Trader 6: Insufficient stock for boar. Available: 0, Requested: 3
+2024/12/12 04:51:41 Buyer 4: Buy request response: Insufficient stock for boar. Available: 0
+2024/12/12 04:51:41 Warehouse 0: Shipped 3 units of boar. Remaining inventory: map[boar:959 fish:899 salt:1163]
+2024/12/12 04:51:41 UNDERSELLING DETECTED - Trader 6: Warehouse has sufficient stock for 3 boar but request was rejected by cache.
+2024/12/12 04:51:41 RE-CONFIRM: Buyer 4: Received rejection notification: Shipped 3 units of boar
+2024/12/12 04:51:41 Trader 6: Notified Buyer 4 with final decision: Shipped 3 units of boar
+^C
+ubuntu@instance-20241209-031100:~/transfer/A3-cacheful$ INFO - Node 3 (Seller from Post 3): Generated 10 units of fish. Total inventory: map[boar:32 fish:15]
+2024/12/12 04:51:43 SUCCESS - Warehouse: Loaded inventory from file: map[boar:962 fish:899 salt:1163]
+2024/12/12 04:51:43 SUCCESS - Warehouse: Added 15 units of fish. Current inventory: map[boar:962 fish:914 salt:1163]
+2024/12/12 04:51:43 Trader 6: Successfully forwarded LOAD request to Warehouse
+2024/12/12 04:51:43 SUCCESS - Node 3 (Seller from Post 3): Loaded 15 units of fish to Trader 6
+./kill*
+8000/tcp:            1026079
+signal: killed
+8001/tcp:            1026695
+signal: killed
+8002/tcp:            1026710
+signal: killed
+8003/tcp:            1026720
+signal: killed
+8004/tcp:            1026702
+signal: killed
+8005/tcp:            1026708
+signal: killed
+8006/tcp:            1026726
+signal: killed
